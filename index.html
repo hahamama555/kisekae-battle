@@ -1,1 +1,3151 @@
-# kisekae-battle
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+<title>着せ替えバトル</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    "Noto Sans JP",
+    sans-serif;
+  background:#f4f4f7;
+  color:#222;
+}
+
+button,
+input,
+select{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.app{
+  width:100%;
+  height:100dvh;
+  max-width:520px;
+  margin:auto;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* =========================
+HEADER
+========================= */
+
+.header{
+  flex:0 0 auto;
+  padding:7px 8px 4px;
+  text-align:center;
+}
+
+.mainTitle{
+  font-size:22px;
+  font-weight:1000;
+  line-height:1.1;
+}
+
+.vsLine{
+  margin-top:2px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-size:16px;
+  font-weight:1000;
+}
+
+.teamHeader{
+  padding:3px 9px;
+  border-radius:20px;
+  color:#fff;
+  max-width:155px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.vsText{
+  font-size:12px;
+  font-weight:1000;
+}
+
+/* =========================
+SCORE
+========================= */
+
+.scoreArea{
+  flex:0 0 auto;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
+  padding:3px 7px;
+}
+
+.scoreCard{
+  color:#fff;
+  border-radius:11px;
+  padding:4px 7px;
+}
+
+.scoreName{
+  font-size:10px;
+  font-weight:900;
+}
+
+.scoreNumber{
+  font-size:20px;
+  font-weight:1000;
+  line-height:1;
+}
+
+.scoreBar{
+  height:6px;
+  margin-top:3px;
+  background:rgba(255,255,255,.35);
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.scoreFill{
+  width:0%;
+  height:100%;
+  background:#fff;
+  transition:.3s;
+}
+
+/* =========================
+CHARACTER
+========================= */
+
+.characterArea{
+  position:relative;
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+.characterName{
+  position:absolute;
+  top:3px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:50;
+  background:rgba(255,255,255,.94);
+  border-radius:20px;
+  padding:4px 12px;
+  font-size:11px;
+  font-weight:1000;
+  white-space:nowrap;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+
+.stage{
+  position:relative;
+  width:min(63vw,290px);
+  height:min(63vw,290px);
+  aspect-ratio:1/1;
+}
+
+.layer{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+}
+
+.base{
+  z-index:1;
+}
+
+.top{
+  z-index:2;
+}
+
+.onepiece{
+  z-index:3;
+}
+
+.dress{
+  z-index:4;
+}
+
+.bottom{
+  z-index:5;
+}
+
+.outer{
+  z-index:6;
+}
+
+.hair{
+  z-index:7;
+}
+
+.accessory{
+  z-index:8;
+}
+
+.shoes{
+  z-index:9;
+}
+
+/* =========================
+MESSAGE
+========================= */
+
+.message{
+  flex:0 0 auto;
+  text-align:center;
+  min-height:22px;
+  padding:2px 5px;
+  font-size:11px;
+  font-weight:1000;
+}
+
+/* =========================
+PARTS
+========================= */
+
+.partsArea{
+  flex:0 0 auto;
+  padding:3px 7px 4px;
+}
+
+.partsTitle{
+  text-align:center;
+  font-size:9px;
+  font-weight:900;
+  color:#777;
+  margin-bottom:3px;
+}
+
+.partsGrid{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:3px;
+}
+
+.part{
+  aspect-ratio:1/1;
+  border:2px solid #ddd;
+  background:#f5f5f6;
+  border-radius:8px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.partIcon{
+  font-size:15px;
+  line-height:1;
+}
+
+.partName{
+  font-size:6px;
+  font-weight:900;
+  margin-top:2px;
+}
+
+.part.blue{
+  color:#fff;
+}
+
+.part.red{
+  color:#fff;
+}
+
+/* =========================
+BOTTOM
+========================= */
+
+.bottom{
+  position:relative;
+}
+
+.bottomMenu{
+  flex:0 0 auto;
+  display:grid;
+  grid-template-columns:1.3fr 1fr 1fr 1fr;
+  gap:4px;
+  padding:5px 7px 7px;
+  border-top:1px solid #eee;
+  background:#fff;
+}
+
+.menuBtn{
+  border:0;
+  border-radius:10px;
+  min-height:40px;
+  font-size:10px;
+  font-weight:1000;
+  background:#eee;
+}
+
+.giftBtn{
+  background:#ffd338;
+  box-shadow:0 3px 0 #d2a800;
+}
+
+.giftBtn:active{
+  transform:translateY(2px);
+  box-shadow:0 1px 0 #d2a800;
+}
+
+/* =========================
+MODAL
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  z-index:1000;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modalBox{
+  width:min(94vw,430px);
+  max-height:90vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:20px;
+  padding:15px;
+}
+
+.modalTitle{
+  text-align:center;
+  font-size:18px;
+  font-weight:1000;
+  margin-bottom:9px;
+}
+
+.modalSub{
+  text-align:center;
+  color:#777;
+  font-size:11px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.modalButtons{
+  display:grid;
+  gap:6px;
+}
+
+.modalBtn{
+  border:0;
+  border-radius:12px;
+  padding:11px;
+  font-size:13px;
+  font-weight:1000;
+}
+
+.close{
+  background:#eee;
+}
+
+.blueChoice{
+  color:#fff;
+}
+
+.redChoice{
+  color:#fff;
+}
+
+/* =========================
+CHARACTER GRID
+========================= */
+
+.characterGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:7px;
+}
+
+.characterCard{
+  border:3px solid #ddd;
+  border-radius:14px;
+  padding:6px;
+  text-align:center;
+  background:#fafafa;
+}
+
+.characterCard.current{
+  border-color:#222;
+}
+
+.characterCard img{
+  width:100%;
+  height:120px;
+  object-fit:contain;
+}
+
+.characterCardName{
+  font-size:11px;
+  font-weight:1000;
+  margin:2px 0;
+}
+
+.smallBtn{
+  width:100%;
+  border:0;
+  border-radius:8px;
+  padding:6px;
+  font-size:9px;
+  font-weight:900;
+  background:#222;
+  color:#fff;
+}
+
+.deleteBtn{
+  margin-top:3px;
+  background:#eee;
+  color:#555;
+}
+
+/* =========================
+FORM
+========================= */
+
+.formGroup{
+  margin-bottom:9px;
+}
+
+.formLabel{
+  display:block;
+  font-size:11px;
+  font-weight:1000;
+  margin-bottom:4px;
+}
+
+.input{
+  width:100%;
+  padding:9px;
+  border:2px solid #ddd;
+  border-radius:9px;
+  font-size:14px;
+  background:#fff;
+}
+
+.colorInput{
+  width:100%;
+  height:42px;
+  border:2px solid #ddd;
+  border-radius:9px;
+  padding:3px;
+  background:#fff;
+}
+
+/* =========================
+ITEM GRID
+========================= */
+
+.itemGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.itemCard{
+  border:2px solid #ddd;
+  border-radius:12px;
+  padding:6px;
+  background:#fafafa;
+}
+
+.itemCard img{
+  width:100%;
+  height:120px;
+  object-fit:contain;
+}
+
+.itemName{
+  font-size:11px;
+  font-weight:1000;
+  text-align:center;
+}
+
+.itemPrice{
+  font-size:9px;
+  color:#777;
+  text-align:center;
+  margin-top:2px;
+}
+
+.itemDelete{
+  width:100%;
+  border:0;
+  border-radius:8px;
+  padding:6px;
+  margin-top:4px;
+  background:#eee;
+  font-size:9px;
+  font-weight:900;
+}
+
+/* =========================
+ROULETTE
+========================= */
+
+.roulette{
+  text-align:center;
+}
+
+.rouletteIcon{
+  font-size:48px;
+  margin:5px 0;
+}
+
+.rouletteName{
+  min-height:32px;
+  font-size:21px;
+  font-weight:1000;
+}
+
+.result{
+  margin-top:8px;
+  padding:9px;
+  background:#f4f4f7;
+  border-radius:13px;
+}
+
+.result img{
+  width:150px;
+  height:150px;
+  object-fit:contain;
+}
+
+.resultName{
+  font-size:16px;
+  font-weight:1000;
+}
+
+/* =========================
+WIN
+========================= */
+
+.winEmoji{
+  text-align:center;
+  font-size:55px;
+}
+
+.winTitle{
+  text-align:center;
+  font-size:28px;
+  font-weight:1000;
+  margin:6px 0;
+}
+
+.winText{
+  text-align:center;
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+@media(max-height:650px){
+
+  .mainTitle{
+    font-size:18px;
+  }
+
+  .vsLine{
+    font-size:13px;
+  }
+
+  .stage{
+    width:54vw;
+    height:54vw;
+  }
+
+  .characterName{
+    font-size:9px;
+  }
+
+  .menuBtn{
+    min-height:34px;
+    font-size:9px;
+  }
+
+  .partIcon{
+    font-size:12px;
+  }
+
+  .partName{
+    font-size:5px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+
+    <div class="mainTitle">
+      👗 着せ替えバトル
+    </div>
+
+    <div class="vsLine">
+
+      <div
+        id="headerTeam1"
+        class="teamHeader">
+        チーム1
+      </div>
+
+      <div
+        id="headerVS"
+        class="vsText">
+        VS
+      </div>
+
+      <div
+        id="headerTeam2"
+        class="teamHeader">
+        チーム2
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- SCORE -->
+  <section class="scoreArea">
+
+    <div
+      id="scoreCard1"
+      class="scoreCard">
+
+      <div
+        id="scoreName1"
+        class="scoreName">
+        チーム1
+      </div>
+
+      <div class="scoreNumber">
+        <span id="score1">0</span>/8
+      </div>
+
+      <div class="scoreBar">
+        <div
+          id="fill1"
+          class="scoreFill">
+        </div>
+      </div>
+
+    </div>
+
+
+    <div
+      id="scoreCard2"
+      class="scoreCard">
+
+      <div
+        id="scoreName2"
+        class="scoreName">
+        チーム2
+      </div>
+
+      <div class="scoreNumber">
+        <span id="score2">0</span>/8
+      </div>
+
+      <div class="scoreBar">
+        <div
+          id="fill2"
+          class="scoreFill">
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- CHARACTER -->
+  <main class="characterArea">
+
+    <div
+      id="characterName"
+      class="characterName">
+      キャラクター未設定
+    </div>
+
+    <div class="stage">
+
+      <img id="baseLayer"
+           class="layer base"
+           src="">
+
+      <img id="topLayer"
+           class="layer top"
+           src="">
+
+      <img id="onepieceLayer"
+           class="layer onepiece"
+           src="">
+
+      <img id="dressLayer"
+           class="layer dress"
+           src="">
+
+      <img id="bottomLayer"
+           class="layer bottom"
+           src="">
+
+      <img id="outerLayer"
+           class="layer outer"
+           src="">
+
+      <img id="hairLayer"
+           class="layer hair"
+           src="">
+
+      <img id="accessoryLayer"
+           class="layer accessory"
+           src="">
+
+      <img id="shoesLayer"
+           class="layer shoes"
+           src="">
+
+    </div>
+
+  </main>
+
+
+  <div
+    id="message"
+    class="message">
+    🎁 ギフトでチームを勝利に導こう！
+  </div>
+
+
+  <!-- PARTS -->
+  <section class="partsArea">
+
+    <div class="partsTitle">
+      現在のバトル状況
+    </div>
+
+    <div
+      id="partsGrid"
+      class="partsGrid">
+    </div>
+
+  </section>
+
+
+  <!-- MENU -->
+  <nav class="bottomMenu">
+
+    <button
+      type="button"
+      id="giftBtn"
+      class="menuBtn giftBtn">
+      🎁 ギフトが来た！
+    </button>
+
+    <button
+      type="button"
+      id="characterBtn"
+      class="menuBtn">
+      👤 キャラ
+    </button>
+
+    <button
+      type="button"
+      id="itemBtn"
+      class="menuBtn">
+      👗 衣装
+    </button>
+
+    <button
+      type="button"
+      id="settingBtn"
+      class="menuBtn">
+      ⚙️ 設定
+    </button>
+
+  </nav>
+
+</div>
+
+
+<!-- =========================
+TEAM MODAL
+========================= -->
+
+<div id="teamModal" class="modal">
+
+  <div class="modalBox">
+
+    <div class="modalTitle">
+      🎁 どっちのチーム？
+    </div>
+
+    <div class="modalSub">
+      ギフトを送ってくれた人のチームを選択
+    </div>
+
+    <div class="modalButtons">
+
+      <button
+        type="button"
+        id="team1Choice"
+        class="modalBtn blueChoice">
+        チーム1
+      </button>
+
+      <button
+        type="button"
+        id="team2Choice"
+        class="modalBtn redChoice">
+        チーム2
+      </button>
+
+      <button
+        type="button"
+        id="teamClose"
+        class="modalBtn close">
+        閉じる
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+ROULETTE
+========================= -->
+
+<div id="rouletteModal" class="modal">
+
+  <div class="modalBox roulette">
+
+    <div class="modalTitle">
+      🎲 着せ替えルーレット
+    </div>
+
+    <div class="rouletteIcon">
+      🎁
+    </div>
+
+    <div
+      id="rouletteName"
+      class="rouletteName">
+      抽選中…
+    </div>
+
+    <div
+      id="resultBox"
+      class="result hidden">
+
+      <img
+        id="resultImage"
+        src="">
+
+      <div
+        id="resultName"
+        class="resultName">
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+CHARACTER MODAL
+========================= -->
+
+<div id="characterModal" class="modal">
+
+  <div class="modalBox">
+
+    <div class="modalTitle">
+      👤 キャラクター選択
+    </div>
+
+    <div class="modalSub">
+      バトルに使うキャラクター
+    </div>
+
+    <div
+      id="characterGrid"
+      class="characterGrid">
+    </div>
+
+    <div style="height:8px"></div>
+
+    <div class="modalButtons">
+
+      <button
+        type="button"
+        id="addCharacterBtn"
+        class="modalBtn"
+        style="background:#222;color:#fff;">
+        ➕ キャラクター追加
+      </button>
+
+      <button
+        type="button"
+        id="characterClose"
+        class="modalBtn close">
+        閉じる
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+ADD CHARACTER
+========================= -->
+
+<div id="addCharacterModal" class="modal">
+
+  <div class="modalBox">
+
+    <div class="modalTitle">
+      ➕ キャラクター追加
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        キャラクター名
+      </label>
+
+      <input
+        id="characterNameInput"
+        class="input"
+        placeholder="例：プリンセスA">
+
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        キャラクター画像
+      </label>
+
+      <input
+        id="characterFile"
+        type="file"
+        accept="image/*">
+
+    </div>
+
+    <div class="modalButtons">
+
+      <button
+        type="button"
+        id="saveCharacterBtn"
+        class="modalBtn"
+        style="background:#222;color:#fff;">
+        追加する
+      </button>
+
+      <button
+        type="button"
+        id="addCharacterClose"
+        class="modalBtn close">
+        戻る
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+ITEM MODAL
+========================= -->
+
+<div id="itemModal" class="modal">
+
+  <div class="modalBox">
+
+    <div class="modalTitle">
+      👗 衣装設定
+    </div>
+
+    <div class="modalSub">
+      衣装を追加・確認できます
+    </div>
+
+    <div
+      id="itemGrid"
+      class="itemGrid">
+    </div>
+
+    <div style="height:10px"></div>
+
+    <div class="modalButtons">
+
+      <button
+        type="button"
+        id="addItemBtn"
+        class="modalBtn"
+        style="background:#222;color:#fff;">
+        ➕ 衣装を追加
+      </button>
+
+      <button
+        type="button"
+        id="itemClose"
+        class="modalBtn close">
+        閉じる
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+ADD ITEM
+========================= -->
+
+<div id="addItemModal" class="modal">
+
+  <div class="modalBox">
+
+    <div class="modalTitle">
+      ➕ 衣装追加
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        衣装名
+      </label>
+
+      <input
+        id="itemNameInput"
+        class="input"
+        placeholder="例：ブルードレス">
+
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        カテゴリー
+      </label>
+
+      <select
+        id="itemCategory"
+        class="input">
+
+        <option value="top">👚 トップ</option>
+        <option value="onepiece">👗 ワンピース</option>
+        <option value="dress">👗 ドレス</option>
+        <option value="bottom">👖 ボトム</option>
+        <option value="outer">🧥 アウター</option>
+        <option value="hair">💇 ヘア</option>
+        <option value="accessory">✨ アクセサリー</option>
+        <option value="shoes">👠 シューズ</option>
+
+      </select>
+
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        コイン表示
+      </label>
+
+      <input
+        id="itemPrice"
+        class="input"
+        type="number"
+        value="500"
+        min="0">
+
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        衣装画像
+      </label>
+
+      <input
+        id="itemFile"
+        type="file"
+        accept="image/*">
+
+    </div>
+
+    <div class="modalButtons">
+
+      <button
+        type="button"
+        id="saveItemBtn"
+        class="modalBtn"
+        style="background:#222;color:#fff;">
+        追加する
+      </button>
+
+      <button
+        type="button"
+        id="addItemClose"
+        class="modalBtn close">
+        戻る
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+SETTING
+========================= -->
+
+<div id="settingModal" class="modal">
+
+  <div class="modalBox">
+
+    <div class="modalTitle">
+      ⚙️ バトル設定
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        チーム1名
+      </label>
+
+      <input
+        id="teamName1Input"
+        class="input">
+
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        VS表示
+      </label>
+
+      <input
+        id="vsInput"
+        class="input">
+
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        チーム2名
+      </label>
+
+      <input
+        id="teamName2Input"
+        class="input">
+
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        チーム1カラー
+      </label>
+
+      <input
+        id="color1Input"
+        class="colorInput"
+        type="color">
+
+    </div>
+
+    <div class="formGroup">
+
+      <label class="formLabel">
+        チーム2カラー
+      </label>
+
+      <input
+        id="color2Input"
+        class="colorInput"
+        type="color">
+
+    </div>
+
+    <div class="modalButtons">
+
+      <button
+        type="button"
+        id="saveSettingBtn"
+        class="modalBtn"
+        style="background:#222;color:#fff;">
+        💾 設定を保存
+      </button>
+
+      <button
+        type="button"
+        id="resetBattleBtn"
+        class="modalBtn"
+        style="background:#fff0f0;color:#d22;">
+        🔄 バトルだけリセット
+      </button>
+
+      <button
+        type="button"
+        id="settingClose"
+        class="modalBtn close">
+        閉じる
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+WIN
+========================= -->
+
+<div id="winModal" class="modal">
+
+  <div class="modalBox">
+
+    <div class="winEmoji">
+      👑
+    </div>
+
+    <div
+      id="winTitle"
+      class="winTitle">
+      WIN!
+    </div>
+
+    <div
+      id="winText"
+      class="winText">
+      全身完成！
+    </div>
+
+    <div class="modalButtons">
+
+      <button
+        type="button"
+        id="winReset"
+        class="modalBtn"
+        style="background:#222;color:#fff;">
+        🔄 新しいバトル
+      </button>
+
+      <button
+        type="button"
+        id="winClose"
+        class="modalBtn close">
+        閉じる
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+PARTS
+========================================================= */
+
+const PARTS = [
+
+  {id:"top",name:"トップ",icon:"👚"},
+  {id:"onepiece",name:"ワンピ",icon:"👗"},
+  {id:"dress",name:"ドレス",icon:"👗"},
+  {id:"bottom",name:"ボトム",icon:"👖"},
+  {id:"outer",name:"アウター",icon:"🧥"},
+  {id:"hair",name:"ヘア",icon:"💇"},
+  {id:"accessory",name:"アクセ",icon:"✨"},
+  {id:"shoes",name:"シューズ",icon:"👠"}
+
+];
+
+
+/* =========================================================
+DEFAULT SETTINGS
+========================================================= */
+
+let settings = {
+
+  team1:"1〜6月生まれ",
+
+  vs:"VS",
+
+  team2:"7〜12月生まれ",
+
+  color1:"#2586e8",
+
+  color2:"#ef4b52"
+
+};
+
+
+/* =========================================================
+DATA
+========================================================= */
+
+let characters = [];
+
+let currentCharacterId = null;
+
+let items = [];
+
+let owners = {};
+
+let battleFinished = false;
+
+
+/* =========================================================
+INIT OWNERS
+========================================================= */
+
+function resetOwners(){
+
+  owners = {};
+
+  PARTS.forEach(part=>{
+    owners[part.id] = null;
+  });
+
+}
+
+
+/* =========================================================
+STORAGE
+========================================================= */
+
+function save(){
+
+  try{
+
+    localStorage.setItem(
+      "dressBattleSettings",
+      JSON.stringify(settings)
+    );
+
+    localStorage.setItem(
+      "dressBattleCharacters",
+      JSON.stringify(characters)
+    );
+
+    localStorage.setItem(
+      "dressBattleCurrentCharacter",
+      currentCharacterId || ""
+    );
+
+    localStorage.setItem(
+      "dressBattleItems",
+      JSON.stringify(items)
+    );
+
+    localStorage.setItem(
+      "dressBattleOwners",
+      JSON.stringify(owners)
+    );
+
+    localStorage.setItem(
+      "dressBattleFinished",
+      battleFinished ? "1" : "0"
+    );
+
+  }catch(e){
+
+    console.warn("保存できませんでした",e);
+
+  }
+
+}
+
+
+function load(){
+
+  try{
+
+    const s =
+      localStorage.getItem(
+        "dressBattleSettings"
+      );
+
+    if(s){
+
+      settings = {
+        ...settings,
+        ...JSON.parse(s)
+      };
+
+    }
+
+
+    const c =
+      localStorage.getItem(
+        "dressBattleCharacters"
+      );
+
+    if(c){
+
+      characters = JSON.parse(c);
+
+    }
+
+
+    currentCharacterId =
+      localStorage.getItem(
+        "dressBattleCurrentCharacter"
+      ) || null;
+
+
+    const i =
+      localStorage.getItem(
+        "dressBattleItems"
+      );
+
+    if(i){
+
+      items = JSON.parse(i);
+
+    }
+
+
+    const o =
+      localStorage.getItem(
+        "dressBattleOwners"
+      );
+
+    resetOwners();
+
+    if(o){
+
+      const data = JSON.parse(o);
+
+      PARTS.forEach(part=>{
+        owners[part.id] =
+          data[part.id] || null;
+      });
+
+    }
+
+
+    battleFinished =
+      localStorage.getItem(
+        "dressBattleFinished"
+      ) === "1";
+
+
+  }catch(e){
+
+    console.warn("読み込みエラー",e);
+
+    resetOwners();
+
+  }
+
+}
+
+
+/* =========================================================
+MODAL
+========================================================= */
+
+function openModal(id){
+
+  document
+    .getElementById(id)
+    .classList.add("show");
+
+}
+
+
+function closeModal(id){
+
+  document
+    .getElementById(id)
+    .classList.remove("show");
+
+}
+
+
+/* =========================================================
+SETTINGS RENDER
+========================================================= */
+
+function renderSettings(){
+
+  document
+    .getElementById("headerTeam1")
+    .textContent = settings.team1;
+
+  document
+    .getElementById("headerTeam2")
+    .textContent = settings.team2;
+
+  document
+    .getElementById("headerVS")
+    .textContent = settings.vs;
+
+  document
+    .getElementById("scoreName1")
+    .textContent = settings.team1;
+
+  document
+    .getElementById("scoreName2")
+    .textContent = settings.team2;
+
+
+  document
+    .getElementById("team1Choice")
+    .textContent =
+      "🔵 " + settings.team1;
+
+  document
+    .getElementById("team2Choice")
+    .textContent =
+      "🔴 " + settings.team2;
+
+
+  document
+    .getElementById("headerTeam1")
+    .style.background =
+      settings.color1;
+
+  document
+    .getElementById("headerTeam2")
+    .style.background =
+      settings.color2;
+
+  document
+    .getElementById("scoreCard1")
+    .style.background =
+      settings.color1;
+
+  document
+    .getElementById("scoreCard2")
+    .style.background =
+      settings.color2;
+
+  document
+    .getElementById("team1Choice")
+    .style.background =
+      settings.color1;
+
+  document
+    .getElementById("team2Choice")
+    .style.background =
+      settings.color2;
+
+
+  document
+    .getElementById("teamName1Input")
+    .value = settings.team1;
+
+  document
+    .getElementById("vsInput")
+    .value = settings.vs;
+
+  document
+    .getElementById("teamName2Input")
+    .value = settings.team2;
+
+  document
+    .getElementById("color1Input")
+    .value = settings.color1;
+
+  document
+    .getElementById("color2Input")
+    .value = settings.color2;
+
+}
+
+
+/* =========================================================
+CHARACTER
+========================================================= */
+
+function currentCharacter(){
+
+  return characters.find(
+    c =>
+      c.id === currentCharacterId
+  );
+
+}
+
+
+function makeCharacter(
+  name,
+  image
+){
+
+  const character = {
+
+    id:
+      "char_" +
+      Date.now() +
+      "_" +
+      Math.random()
+        .toString(36)
+        .slice(2),
+
+    name:
+      name || "キャラクター",
+
+    image:image,
+
+    equipped:{
+      top:null,
+      onepiece:null,
+      dress:null,
+      bottom:null,
+      outer:null,
+      hair:null,
+      accessory:null,
+      shoes:null
+    }
+
+  };
+
+
+  characters.push(character);
+
+  currentCharacterId =
+    character.id;
+
+  save();
+
+  renderCharacter();
+
+}
+
+
+function renderCharacter(){
+
+  const c =
+    currentCharacter();
+
+
+  const name =
+    document.getElementById(
+      "characterName"
+    );
+
+
+  if(!c){
+
+    name.textContent =
+      "👤 キャラクター未設定";
+
+    return;
+
+  }
+
+
+  name.textContent =
+    "👤 " + c.name;
+
+
+  document
+    .getElementById("baseLayer")
+    .src = c.image || "";
+
+
+  const eq =
+    c.equipped || {};
+
+
+  PARTS.forEach(part=>{
+
+    const el =
+      document.getElementById(
+        part.id + "Layer"
+      );
+
+    if(!el) return;
+
+    const item =
+      eq[part.id];
+
+
+    el.src =
+      item && item.image
+        ? item.image
+        : "";
+
+  });
+
+
+  const whole =
+    !!eq.onepiece ||
+    !!eq.dress;
+
+
+  document
+    .getElementById("topLayer")
+    .style.display =
+      whole ? "none" : "";
+
+  document
+    .getElementById("bottomLayer")
+    .style.display =
+      whole ? "none" : "";
+
+}
+
+
+/* =========================================================
+CHARACTER LIST
+========================================================= */
+
+function renderCharacters(){
+
+  const grid =
+    document.getElementById(
+      "characterGrid"
+    );
+
+  grid.innerHTML = "";
+
+
+  if(!characters.length){
+
+    grid.innerHTML = `
+      <div style="
+        grid-column:1/-1;
+        text-align:center;
+        padding:20px;
+        font-weight:900;
+      ">
+        キャラクターを追加してください
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  characters.forEach(c=>{
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "characterCard" +
+      (
+        c.id === currentCharacterId
+          ? " current"
+          : ""
+      );
+
+
+    card.innerHTML = `
+
+      <img
+        src="${c.image || ""}"
+        alt="">
+
+      <div class="characterCardName">
+        ${escapeHtml(c.name)}
+      </div>
+
+      <button
+        type="button"
+        class="smallBtn selectBtn">
+        ${
+          c.id === currentCharacterId
+            ? "✓ 使用中"
+            : "このキャラを使用"
+        }
+      </button>
+
+      <button
+        type="button"
+        class="smallBtn deleteBtn">
+        削除
+      </button>
+
+    `;
+
+
+    card
+      .querySelector(".selectBtn")
+      .onclick = ()=>{
+
+        currentCharacterId = c.id;
+
+        save();
+
+        renderCharacter();
+
+        renderCharacters();
+
+        closeModal("characterModal");
+
+      };
+
+
+    card
+      .querySelector(".deleteBtn")
+      .onclick = ()=>{
+
+        if(characters.length <= 1){
+
+          alert(
+            "最後のキャラクターは削除できません。"
+          );
+
+          return;
+
+        }
+
+
+        characters =
+          characters.filter(
+            x => x.id !== c.id
+          );
+
+
+        if(currentCharacterId === c.id){
+
+          currentCharacterId =
+            characters[0].id;
+
+        }
+
+
+        save();
+
+        renderCharacters();
+
+        renderCharacter();
+
+      };
+
+
+    grid.appendChild(card);
+
+  });
+
+}
+
+
+/* =========================================================
+ITEM DISPLAY
+========================================================= */
+
+function cropImageForDisplay(
+  src,
+  callback
+){
+
+  const img =
+    new Image();
+
+  img.onload = ()=>{
+
+    try{
+
+      const canvas =
+        document.createElement("canvas");
+
+      canvas.width =
+        img.naturalWidth;
+
+      canvas.height =
+        img.naturalHeight;
+
+      const ctx =
+        canvas.getContext("2d");
+
+      ctx.drawImage(
+        img,
+        0,
+        0
+      );
+
+
+      const data =
+        ctx.getImageData(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        ).data;
+
+
+      let minX =
+        canvas.width;
+
+      let minY =
+        canvas.height;
+
+      let maxX = -1;
+
+      let maxY = -1;
+
+
+      for(
+        let y=0;
+        y<canvas.height;
+        y++
+      ){
+
+        for(
+          let x=0;
+          x<canvas.width;
+          x++
+        ){
+
+          const alpha =
+            data[
+              (y * canvas.width + x) * 4 + 3
+            ];
+
+
+          if(alpha > 5){
+
+            if(x < minX) minX=x;
+            if(y < minY) minY=y;
+            if(x > maxX) maxX=x;
+            if(y > maxY) maxY=y;
+
+          }
+
+        }
+
+      }
+
+
+      if(maxX < 0){
+
+        callback(src);
+
+        return;
+
+      }
+
+
+      const w =
+        maxX - minX + 1;
+
+      const h =
+        maxY - minY + 1;
+
+
+      const out =
+        document.createElement("canvas");
+
+      out.width = w;
+
+      out.height = h;
+
+
+      out
+        .getContext("2d")
+        .drawImage(
+          canvas,
+          minX,
+          minY,
+          w,
+          h,
+          0,
+          0,
+          w,
+          h
+        );
+
+
+      callback(
+        out.toDataURL("image/png")
+      );
+
+    }catch(e){
+
+      callback(src);
+
+    }
+
+  };
+
+
+  img.onerror = ()=>{
+    callback(src);
+  };
+
+
+  img.src = src;
+
+}
+
+
+/* =========================================================
+ITEM LIST
+========================================================= */
+
+function renderItems(){
+
+  const grid =
+    document.getElementById(
+      "itemGrid"
+    );
+
+  grid.innerHTML = "";
+
+
+  if(!items.length){
+
+    grid.innerHTML = `
+      <div style="
+        grid-column:1/-1;
+        text-align:center;
+        padding:20px;
+        font-weight:900;
+      ">
+        衣装がまだありません
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  items.forEach(item=>{
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "itemCard";
+
+
+    const img =
+      document.createElement("img");
+
+    img.src =
+      item.image || "";
+
+
+    cropImageForDisplay(
+      item.image,
+      trimmed=>{
+        img.src = trimmed;
+      }
+    );
+
+
+    const name =
+      document.createElement("div");
+
+    name.className =
+      "itemName";
+
+    name.textContent =
+      item.name;
+
+
+    const price =
+      document.createElement("div");
+
+    price.className =
+      "itemPrice";
+
+    price.textContent =
+      "🪙 " +
+      (item.price || 0) +
+      "コイン";
+
+
+    const del =
+      document.createElement("button");
+
+    del.type = "button";
+
+    del.className =
+      "itemDelete";
+
+    del.textContent =
+      "削除";
+
+
+    del.onclick = ()=>{
+
+      items =
+        items.filter(
+          x => x.id !== item.id
+        );
+
+
+      save();
+
+      renderItems();
+
+    };
+
+
+    card.appendChild(img);
+
+    card.appendChild(name);
+
+    card.appendChild(price);
+
+    card.appendChild(del);
+
+    grid.appendChild(card);
+
+  });
+
+}
+
+
+/* =========================================================
+BATTLE SCORE
+========================================================= */
+
+function countTeam(team){
+
+  return PARTS.filter(
+    part =>
+      owners[part.id] === team
+  ).length;
+
+}
+
+
+function renderBattle(){
+
+  const c1 =
+    countTeam(1);
+
+  const c2 =
+    countTeam(2);
+
+
+  document
+    .getElementById("score1")
+    .textContent = c1;
+
+  document
+    .getElementById("score2")
+    .textContent = c2;
+
+
+  document
+    .getElementById("fill1")
+    .style.width =
+      (c1 / 8 * 100) + "%";
+
+  document
+    .getElementById("fill2")
+    .style.width =
+      (c2 / 8 * 100) + "%";
+
+
+  const grid =
+    document.getElementById(
+      "partsGrid"
+    );
+
+  grid.innerHTML = "";
+
+
+  PARTS.forEach(part=>{
+
+    const el =
+      document.createElement("div");
+
+    el.className = "part";
+
+
+    const owner =
+      owners[part.id];
+
+
+    if(owner === 1){
+
+      el.classList.add("blue");
+
+      el.style.background =
+        settings.color1;
+
+      el.style.borderColor =
+        settings.color1;
+
+    }
+
+
+    if(owner === 2){
+
+      el.classList.add("red");
+
+      el.style.background =
+        settings.color2;
+
+      el.style.borderColor =
+        settings.color2;
+
+    }
+
+
+    el.innerHTML = `
+
+      <div class="partIcon">
+        ${part.icon}
+      </div>
+
+      <div class="partName">
+        ${part.name}
+      </div>
+
+    `;
+
+
+    grid.appendChild(el);
+
+  });
+
+}
+
+
+/* =========================================================
+RANDOM PART
+========================================================= */
+
+function randomPart(team){
+
+  const other =
+    PARTS.filter(
+      p =>
+        owners[p.id] !== team
+    );
+
+
+  if(other.length){
+
+    return other[
+      Math.floor(
+        Math.random() *
+        other.length
+      )
+    ];
+
+  }
+
+
+  return PARTS[
+    Math.floor(
+      Math.random() *
+      PARTS.length
+    )
+  ];
+
+}
+
+
+/* =========================================================
+EQUIP ITEM
+========================================================= */
+
+function equipRandomItem(
+  team,
+  part
+){
+
+  const list =
+    items.filter(
+      item =>
+        item.category === part.id
+    );
+
+
+  if(!list.length){
+
+    return null;
+
+  }
+
+
+  return list[
+    Math.floor(
+      Math.random() *
+      list.length
+    )
+  ];
+
+}
+
+
+/* =========================================================
+BATTLE DRAW
+========================================================= */
+
+function startDraw(team){
+
+  closeModal("teamModal");
+
+  openModal("rouletteModal");
+
+
+  const rouletteName =
+    document.getElementById(
+      "rouletteName"
+    );
+
+  const resultBox =
+    document.getElementById(
+      "resultBox"
+    );
+
+
+  resultBox.classList.add(
+    "hidden"
+  );
+
+
+  const part =
+    randomPart(team);
+
+
+  let counter = 0;
+
+
+  const timer =
+    setInterval(()=>{
+
+      const random =
+        PARTS[
+          Math.floor(
+            Math.random() *
+            PARTS.length
+          )
+        ];
+
+
+      rouletteName.textContent =
+        random.icon +
+        " " +
+        random.name;
+
+
+      counter++;
+
+
+      if(counter >= 15){
+
+        clearInterval(timer);
+
+        finishDraw(
+          team,
+          part
+        );
+
+      }
+
+    },90);
+
+}
+
+
+function finishDraw(
+  team,
+  part
+){
+
+  owners[part.id] =
+    team;
+
+
+  const item =
+    equipRandomItem(
+      team,
+      part
+    );
+
+
+  const c =
+    currentCharacter();
+
+
+  if(c && item){
+
+    if(
+      part.id === "onepiece" ||
+      part.id === "dress"
+    ){
+
+      c.equipped.top = null;
+      c.equipped.bottom = null;
+
+    }
+
+
+    if(
+      part.id === "top" ||
+      part.id === "bottom"
+    ){
+
+      c.equipped.onepiece = null;
+      c.equipped.dress = null;
+
+    }
+
+
+    c.equipped[part.id] =
+      item;
+
+  }
+
+
+  const resultBox =
+    document.getElementById(
+      "resultBox"
+    );
+
+
+  const resultImage =
+    document.getElementById(
+      "resultImage"
+    );
+
+
+  const resultName =
+    document.getElementById(
+      "resultName"
+    );
+
+
+  if(item){
+
+    resultImage.src =
+      item.image || "";
+
+    resultName.textContent =
+      "🎉 " +
+      part.name +
+      " GET！";
+
+  }else{
+
+    resultImage.src = "";
+
+    resultName.textContent =
+      "🎉 " +
+      part.name +
+      "を獲得！";
+
+  }
+
+
+  resultBox.classList.remove(
+    "hidden"
+  );
+
+
+  renderCharacter();
+
+  renderBattle();
+
+  save();
+
+
+  setTimeout(()=>{
+
+    checkWinner();
+
+  },900);
+
+}
+
+
+/* =========================================================
+WINNER
+========================================================= */
+
+function checkWinner(){
+
+  const c1 =
+    countTeam(1);
+
+  const c2 =
+    countTeam(2);
+
+
+  if(c1 < 8 && c2 < 8){
+
+    closeModal("rouletteModal");
+
+    document
+      .getElementById("message")
+      .textContent =
+        "🎁 次のギフトでバトルが動く！";
+
+    return;
+
+  }
+
+
+  if(c1 >= 8){
+
+    battleFinished = true;
+
+    showWinner(1);
+
+  }
+
+
+  if(c2 >= 8){
+
+    battleFinished = true;
+
+    showWinner(2);
+
+  }
+
+
+  save();
+
+}
+
+
+function showWinner(team){
+
+  closeModal("rouletteModal");
+
+  const name =
+    team === 1
+      ? settings.team1
+      : settings.team2;
+
+
+  const color =
+    team === 1
+      ? settings.color1
+      : settings.color2;
+
+
+  const title =
+    document.getElementById(
+      "winTitle"
+    );
+
+
+  title.textContent =
+    "🏆 " +
+    name +
+    " WIN!";
+
+
+  title.style.color =
+    color;
+
+
+  document
+    .getElementById("winText")
+    .textContent =
+      "全身をチームカラーに完成させました！";
+
+
+  openModal("winModal");
+
+}
+
+
+/* =========================================================
+RESET BATTLE
+========================================================= */
+
+function resetBattle(){
+
+  resetOwners();
+
+  battleFinished = false;
+
+  const c =
+    currentCharacter();
+
+
+  if(c){
+
+    c.equipped = {
+
+      top:null,
+      onepiece:null,
+      dress:null,
+      bottom:null,
+      outer:null,
+      hair:null,
+      accessory:null,
+      shoes:null
+
+    };
+
+  }
+
+
+  save();
+
+  renderBattle();
+
+  renderCharacter();
+
+  document
+    .getElementById("message")
+    .textContent =
+      "🎁 新しいバトルスタート！";
+
+}
+
+
+/* =========================================================
+FILE TO DATA URL
+========================================================= */
+
+function fileToDataURL(
+  file
+){
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      const reader =
+        new FileReader();
+
+      reader.onload =
+        ()=>resolve(
+          reader.result
+        );
+
+      reader.onerror =
+        reject;
+
+      reader.readAsDataURL(file);
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+ESCAPE
+========================================================= */
+
+function escapeHtml(str){
+
+  return String(str)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+EVENTS
+========================================================= */
+
+document
+  .getElementById("giftBtn")
+  .onclick = ()=>{
+
+    if(battleFinished){
+
+      openModal("winModal");
+
+      return;
+
+    }
+
+    openModal("teamModal");
+
+  };
+
+
+document
+  .getElementById("team1Choice")
+  .onclick = ()=>{
+
+    startDraw(1);
+
+  };
+
+
+document
+  .getElementById("team2Choice")
+  .onclick = ()=>{
+
+    startDraw(2);
+
+  };
+
+
+document
+  .getElementById("teamClose")
+  .onclick = ()=>{
+
+    closeModal("teamModal");
+
+  };
+
+
+/* CHARACTER */
+
+document
+  .getElementById("characterBtn")
+  .onclick = ()=>{
+
+    renderCharacters();
+
+    openModal("characterModal");
+
+  };
+
+
+document
+  .getElementById("characterClose")
+  .onclick = ()=>{
+
+    closeModal("characterModal");
+
+  };
+
+
+document
+  .getElementById("addCharacterBtn")
+  .onclick = ()=>{
+
+    closeModal("characterModal");
+
+    document
+      .getElementById(
+        "characterNameInput"
+      ).value = "";
+
+    document
+      .getElementById(
+        "characterFile"
+      ).value = "";
+
+    openModal("addCharacterModal");
+
+  };
+
+
+document
+  .getElementById("addCharacterClose")
+  .onclick = ()=>{
+
+    closeModal("addCharacterModal");
+
+    renderCharacters();
+
+    openModal("characterModal");
+
+  };
+
+
+document
+  .getElementById("saveCharacterBtn")
+  .onclick = async ()=>{
+
+    const name =
+      document
+        .getElementById(
+          "characterNameInput"
+        ).value.trim();
+
+
+    const file =
+      document
+        .getElementById(
+          "characterFile"
+        ).files[0];
+
+
+    if(!file){
+
+      alert(
+        "キャラクター画像を選択してください。"
+      );
+
+      return;
+
+    }
+
+
+    const image =
+      await fileToDataURL(file);
+
+
+    makeCharacter(
+      name,
+      image
+    );
+
+
+    closeModal(
+      "addCharacterModal"
+    );
+
+  };
+
+
+/* ITEM */
+
+document
+  .getElementById("itemBtn")
+  .onclick = ()=>{
+
+    renderItems();
+
+    openModal("itemModal");
+
+  };
+
+
+document
+  .getElementById("itemClose")
+  .onclick = ()=>{
+
+    closeModal("itemModal");
+
+  };
+
+
+document
+  .getElementById("addItemBtn")
+  .onclick = ()=>{
+
+    closeModal("itemModal");
+
+    openModal("addItemModal");
+
+  };
+
+
+document
+  .getElementById("addItemClose")
+  .onclick = ()=>{
+
+    closeModal("addItemModal");
+
+    renderItems();
+
+    openModal("itemModal");
+
+  };
+
+
+document
+  .getElementById("saveItemBtn")
+  .onclick = async ()=>{
+
+    const name =
+      document
+        .getElementById(
+          "itemNameInput"
+        ).value.trim();
+
+
+    const category =
+      document
+        .getElementById(
+          "itemCategory"
+        ).value;
+
+
+    const price =
+      document
+        .getElementById(
+          "itemPrice"
+        ).value;
+
+
+    const file =
+      document
+        .getElementById(
+          "itemFile"
+        ).files[0];
+
+
+    if(!name){
+
+      alert(
+        "衣装名を入力してください。"
+      );
+
+      return;
+
+    }
+
+
+    if(!file){
+
+      alert(
+        "衣装画像を選択してください。"
+      );
+
+      return;
+
+    }
+
+
+    const image =
+      await fileToDataURL(file);
+
+
+    items.push({
+
+      id:
+        "item_" +
+        Date.now() +
+        "_" +
+        Math.random()
+          .toString(36)
+          .slice(2),
+
+      name:name,
+
+      category:category,
+
+      price:Number(price || 0),
+
+      image:image
+
+    });
+
+
+    save();
+
+    closeModal("addItemModal");
+
+    renderItems();
+
+    openModal("itemModal");
+
+  };
+
+
+/* SETTINGS */
+
+document
+  .getElementById("settingBtn")
+  .onclick = ()=>{
+
+    renderSettings();
+
+    openModal("settingModal");
+
+  };
+
+
+document
+  .getElementById("settingClose")
+  .onclick = ()=>{
+
+    closeModal("settingModal");
+
+  };
+
+
+document
+  .getElementById("saveSettingBtn")
+  .onclick = ()=>{
+
+    settings.team1 =
+      document
+        .getElementById(
+          "teamName1Input"
+        ).value.trim() ||
+      "チーム1";
+
+
+    settings.vs =
+      document
+        .getElementById(
+          "vsInput"
+        ).value.trim() ||
+      "VS";
+
+
+    settings.team2 =
+      document
+        .getElementById(
+          "teamName2Input"
+        ).value.trim() ||
+      "チーム2";
+
+
+    settings.color1 =
+      document
+        .getElementById(
+          "color1Input"
+        ).value;
+
+
+    settings.color2 =
+      document
+        .getElementById(
+          "color2Input"
+        ).value;
+
+
+    save();
+
+    renderSettings();
+
+    renderBattle();
+
+    closeModal("settingModal");
+
+  };
+
+
+/* RESET */
+
+document
+  .getElementById("resetBattleBtn")
+  .onclick = ()=>{
+
+    if(
+      confirm(
+        "バトルを最初からやり直しますか？"
+      )
+    ){
+
+      resetBattle();
+
+      closeModal("settingModal");
+
+    }
+
+  };
+
+
+document
+  .getElementById("winReset")
+  .onclick = ()=>{
+
+    resetBattle();
+
+    closeModal("winModal");
+
+  };
+
+
+document
+  .getElementById("winClose")
+  .onclick = ()=>{
+
+    closeModal("winModal");
+
+  };
+
+
+/* =========================================================
+INITIALIZE
+========================================================= */
+
+load();
+
+
+/*
+  キャラクターが1人もいない場合は
+  キャラクター追加を促す状態にする。
+*/
+
+if(
+  characters.length &&
+  !currentCharacterId
+){
+
+  currentCharacterId =
+    characters[0].id;
+
+}
+
+
+renderSettings();
+
+renderCharacter();
+
+renderBattle();
+
+</script>
+
+</body>
+</html>
